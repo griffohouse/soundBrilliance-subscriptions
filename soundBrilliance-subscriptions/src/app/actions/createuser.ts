@@ -1,9 +1,16 @@
 "use server";
 
-
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export async function createEnterpriseUser(formData: FormData) {
+interface ActionState {
+    error: string | null;
+}
+
+export async function createEnterpriseUser(
+    prevState: ActionState,
+    formData: FormData
+): Promise<ActionState> {
 
     const data = Object.fromEntries(formData.entries());
     const {
@@ -15,6 +22,7 @@ export async function createEnterpriseUser(formData: FormData) {
         termsAgreement,
     } = data as Record<string, string>;
 
+    // Validate
     if (password !== confirmPassword) {
         return { error: "Passwords do not match." };
     }
@@ -24,13 +32,12 @@ export async function createEnterpriseUser(formData: FormData) {
     }
 
     try {
+        // Call Xano
         const response = await fetch(
             "https://xpzx-vpjp-v6yl.n7.xano.io/api:YM0i2R_3/enterprise_users",
             {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     access_code: accessCode,
                     name,
@@ -41,18 +48,33 @@ export async function createEnterpriseUser(formData: FormData) {
             }
         );
 
+        const json = await response.json();
+
         if (!response.ok) {
-            const err = await response.json();
-            return { error: err.message || "Failed to submit data to Xano." };
+            let message =
+                json?.message ||
+                json?.error ||
+                json?.detail ||
+                (json?.validation
+                    ? json.validation.map((v: any) => v.message).join(", ")
+                    : null) ||
+                "Failed to submit data to Xano.";
+
+            return { error: message };
         }
 
-        const user = await response.json();
+        const cookieStore = cookies() as ReturnType<typeof cookies>;
+        // @ts-ignore TS does not recognize .set() yet
+        cookieStore.set("stripe_customer_id", json.stripe_customer_id, {
+            path: "/",
+            httpOnly: true,
+        });
 
-        (await cookies()).set("stripe_customer_id", user.stripe_customer_id);
 
+        // Redirect server-side
+        redirect("/checkout");
 
-        return { success: true };
-    } catch (e: any) {
-        return { error: e.message };
+    } catch (err: any) {
+        return { error: err.message || "Unexpected server error" };
     }
 }

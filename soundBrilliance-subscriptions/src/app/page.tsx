@@ -1,12 +1,8 @@
 "use client";
 
-import { SubmitButton } from '@/devlink/SubmitButton';
-import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
+import { useFormState, useFormStatus } from "react-dom";
 import { createEnterpriseUser } from "./actions/createuser";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-
 import {
     Checkbox,
     Field,
@@ -14,39 +10,43 @@ import {
     Input,
     Stack,
     Text,
-    Container
+    Container,
 } from "@chakra-ui/react";
+import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
 
 const PasswordFields = dynamic(
     () => import("@/components/passwordfields"),
     { ssr: false }
 );
 
+// Submit button that uses form status
+function SubmitButton() {
+    const { pending } = useFormStatus();
+
+    return (
+        <button
+            type="submit"
+            disabled={pending}
+            style={{
+                width: "100%",
+                padding: "0.75rem 1.5rem",
+                borderRadius: "2rem",
+                background: pending ? "#999" : "black",
+                color: "#FBF5E5",
+                cursor: pending ? "not-allowed" : "pointer",
+                border: "2px solid black",
+                marginTop: "1.5rem",
+            }}
+        >
+            {pending ? "Creating Account..." : "Create Account"}
+        </button>
+    );
+}
+
 export default function Page() {
-    console.log('signup route');
-    const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
-
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        console.log('trying to submit')
-        e.preventDefault();
-        setError(null);
-
-        const formData = new FormData(e.currentTarget);
-        const result = await createEnterpriseUser(formData);
-
-        if (result?.error) {
-            console.log('error:', result.error)
-            setError(result.error);
-            return;
-        }
-
-        router.push("/checkout");
-    }
-
-    useEffect(() => {
-        if (error) console.log("Error:", error);
-    }, [error]);
+    const [state, formAction] = useFormState(createEnterpriseUser, {
+        error: null,
+    });
 
     return (
         <Container
@@ -59,7 +59,7 @@ export default function Page() {
         >
             <SoundbrillianceLogo />
 
-            <form onSubmit={handleSubmit} autoComplete="new-password">
+            <form action={formAction} autoComplete="new-password">
                 <Fieldset.Root mt="2rem" w="20rem" size="lg" maxW="2xl">
                     <Stack textAlign="center">
                         <Fieldset.Legend color="black">
@@ -93,10 +93,12 @@ export default function Page() {
                             </Checkbox.Label>
                         </Checkbox.Root>
                     </Fieldset.Content>
+
                     <SubmitButton />
-                    {error && (
+
+                    {state.error && (
                         <Text color="#F4576A" mt="1rem">
-                            Error: {error}
+                            Error: {state.error}
                         </Text>
                     )}
                 </Fieldset.Root>
