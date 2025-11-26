@@ -91,14 +91,12 @@ export default function Page() {
                             </Checkbox.Label>
                         </Checkbox.Root>
                     </Fieldset.Content>
-
+                    <SubmitButton />
                     {error && (
                         <Text color="#F4576A" mt="1rem">
                             Error: {error}
                         </Text>
                     )}
-
-                    <SubmitButton />
                 </Fieldset.Root>
             </form>
         </Container>
