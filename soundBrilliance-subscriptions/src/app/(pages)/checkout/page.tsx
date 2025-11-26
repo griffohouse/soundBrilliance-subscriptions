@@ -1,3 +1,5 @@
+"use client";
+
 import dynamicImport from "next/dynamic"
 import { Container, VStack, Text, Center } from "@chakra-ui/react";
 import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
