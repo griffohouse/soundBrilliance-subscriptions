@@ -40,16 +40,21 @@ export async function createEnterpriseUser(formData: FormData) {
         const json = await response.json();
 
         if (!response.ok) {
-            return { error: json.message || "Failed to submit data to Xano." };
+            let message = "Failed to submit data to Xano.";
+            if (json?.message) message = json.message;
+            if (json?.error) message = json.error;
+            if (json?.detail) message = json.detail;
+            if (json?.validation && Array.isArray(json.validation)) {
+                message = json.validation.map((v: any) => v.message).join(", ");
+            }
+            return { error: message };
         }
 
-        // Server action cookie OK ✔
-        (await cookies()).set("stripe_customer_id", json.stripe_customer_id, {
-            path: "/",
-        });
+        // (await cookies()).set("stripe_customer_id", json.stripe_customer_id, {
+        //     path: "/",
+        // });
 
-        // IMPORTANT: Don't redirect here
-        return { success: true };
+        return { success: true,  stripe_customer_id: json.stripe_customer_id };
 
     } catch (e: any) {
         return { error: e.message || "Unknown error occurred" };
