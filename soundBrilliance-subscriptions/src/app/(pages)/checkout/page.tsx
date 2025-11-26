@@ -1,7 +1,6 @@
 import Checkout from '../../../components/checkout'
 import { Container, VStack, Text, Center } from "@chakra-ui/react";
 import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
-export const dynamic = "force-dynamic"; // temporary debugging
 
 export default function Page() {
     return (
@@ -13,9 +12,9 @@ export default function Page() {
                 <Text color="black">
                     Setup Subscription
                 </Text>
-                <Container width={'600px'} backgroundColor={'white'} borderRadius={'1.5rem'}>
-                    <Checkout/>
-                </Container>
+                {/*<Container width={'600px'} backgroundColor={'white'} borderRadius={'1.5rem'}>*/}
+                {/*    <Checkout/>*/}
+                {/*</Container>*/}
             </VStack>
         </Container>
     )

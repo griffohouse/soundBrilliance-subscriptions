@@ -1,57 +1,68 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createEnterpriseUser } from "@/app/actions/createuser";
-import dynamic from "next/dynamic";
-import {
-    Container, Stack, Fieldset, Field, Input, Checkbox, Text, Button
-} from "@chakra-ui/react";
+import { SubmitButton } from '@/devlink/SubmitButton';
 import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
+import { createEnterpriseUser } from "./actions/createuser";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
-const PasswordFields = dynamic(() => import("@/components/passwordfields"), { ssr: false });
+import {
+    Checkbox,
+    Field,
+    Fieldset,
+    Input,
+    Stack,
+    Text,
+    Container
+} from "@chakra-ui/react";
+
+const PasswordFields = dynamic(
+    () => import("@/components/passwordfields"),
+    { ssr: false }
+);
 
 export default function Page() {
-    const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    console.log('signup route');
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
-    async function handleAction(formData: FormData) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         setError(null);
-        setLoading(true);
 
+        const formData = new FormData(e.currentTarget);
         const result = await createEnterpriseUser(formData);
-        console.log('submitting the form')
-
-        setLoading(false);
 
         if (result?.error) {
             setError(result.error);
             return;
         }
 
-        // ✅ Set cookie client-side
-        if (result?.stripe_customer_id) {
-            document.cookie = `stripe_customer_id=${result.stripe_customer_id}; path=/`;
-        }
-
-        // ✅ Client-side redirect
         router.push("/checkout");
     }
 
+    useEffect(() => {
+        if (error) console.log("Error:", error);
+    }, [error]);
+
     return (
-        <Container height="100%" width="100%" fluid pt="3rem" pb="3rem" centerContent>
+        <Container
+            height="100%"
+            width="100%"
+            fluid
+            pt="3rem"
+            pb="3rem"
+            centerContent
+        >
             <SoundbrillianceLogo />
 
-            <form onSubmit={async e => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                await handleAction(formData);
-            }} autoComplete="new-password">
-
+            <form onSubmit={handleSubmit} autoComplete="new-password">
                 <Fieldset.Root mt="2rem" w="20rem" size="lg" maxW="2xl">
                     <Stack textAlign="center">
-                        <Fieldset.Legend color="black">Create an Account</Fieldset.Legend>
+                        <Fieldset.Legend color="black">
+                            Create an Account
+                        </Fieldset.Legend>
                     </Stack>
 
                     <Fieldset.Content>
@@ -75,30 +86,16 @@ export default function Page() {
                         <Checkbox.Root required name="termsAgreement">
                             <Checkbox.HiddenInput />
                             <Checkbox.Control bg="white" />
-                            <Checkbox.Label>I accept terms and conditions</Checkbox.Label>
+                            <Checkbox.Label>
+                                I accept terms and conditions
+                            </Checkbox.Label>
                         </Checkbox.Root>
                     </Fieldset.Content>
-
-                    <Button
-                        type="submit"
-                        paddingTop=".75rem"
-                        paddingBottom=".75rem"
-                        paddingRight="1.5rem"
-                        paddingLeft="1.5rem"
-                        borderRadius={"10rem"}
-                        width="100%"
-                        mt="1.5rem"
-                        bg="black"
-                        border="2px black solid"
-                        color="#FBF5E5"
-                        _hover={{ bg: "#FBF5E5", color: "black" }}
-                        disabled={loading}
-                    >
-                        {loading ? "Creating Account..." : "Create Account"}
-                    </Button>
-
+                    <SubmitButton />
                     {error && (
-                        <Text color="#F4576A" mt="1rem">{error}</Text>
+                        <Text color="#F4576A" mt="1rem">
+                            Error: {error}
+                        </Text>
                     )}
                 </Fieldset.Root>
             </form>
