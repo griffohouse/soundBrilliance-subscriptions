@@ -2,11 +2,10 @@
 
 import { SubmitButton } from '@/devlink/SubmitButton';
 import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
-import { createEnterpriseUser } from "./actions/createuser";
+import { createEnterpriseUser } from "./actions";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 
+import dynamic from "next/dynamic";
 import {
     Checkbox,
     Field,
@@ -23,41 +22,20 @@ const PasswordFields = dynamic(
 );
 
 export default function Page() {
-    console.log('signup route');
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setError(null);
-
-        const formData = new FormData(e.currentTarget);
+    // On server action error, Next passes it into "formState"
+    async function handleAction(formData: FormData) {
         const result = await createEnterpriseUser(formData);
-
-        if (result?.error) {
-            setError(result.error);
-            return;
-        }
-
-        router.push("/checkout");
+        if (result?.error) setError(result.error);
     }
 
-    useEffect(() => {
-        if (error) console.log("Error:", error);
-    }, [error]);
-
     return (
-        <Container
-            height="100%"
-            width="100%"
-            fluid
-            pt="3rem"
-            pb="3rem"
-            centerContent
-        >
+        <Container height="100%" width="100%" fluid pt="3rem" pb="3rem" centerContent>
             <SoundbrillianceLogo />
 
-            <form onSubmit={handleSubmit} autoComplete="new-password">
+            {/* ✔ Form submits directly to server action */}
+            <form action={handleAction} autoComplete="new-password">
                 <Fieldset.Root mt="2rem" w="20rem" size="lg" maxW="2xl">
                     <Stack textAlign="center">
                         <Fieldset.Legend color="black">
@@ -91,7 +69,9 @@ export default function Page() {
                             </Checkbox.Label>
                         </Checkbox.Root>
                     </Fieldset.Content>
+
                     <SubmitButton />
+
                     {error && (
                         <Text color="#F4576A" mt="1rem">
                             Error: {error}

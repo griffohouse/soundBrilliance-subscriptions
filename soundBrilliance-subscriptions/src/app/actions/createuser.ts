@@ -1,10 +1,9 @@
 "use server";
 
-
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function createEnterpriseUser(formData: FormData) {
-
     const data = Object.fromEntries(formData.entries());
     const {
         accessCode,
@@ -15,6 +14,7 @@ export async function createEnterpriseUser(formData: FormData) {
         termsAgreement,
     } = data as Record<string, string>;
 
+    // Client-side validations in server action
     if (password !== confirmPassword) {
         return { error: "Passwords do not match." };
     }
@@ -28,9 +28,7 @@ export async function createEnterpriseUser(formData: FormData) {
             "https://xpzx-vpjp-v6yl.n7.xano.io/api:YM0i2R_3/enterprise_users",
             {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     access_code: accessCode,
                     name,
@@ -41,18 +39,21 @@ export async function createEnterpriseUser(formData: FormData) {
             }
         );
 
+        const json = await response.json();
+
         if (!response.ok) {
-            const err = await response.json();
-            return { error: err.message || "Failed to submit data to Xano." };
+            return { error: json.message || "Failed to submit data to Xano." };
         }
 
-        const user = await response.json();
+        // ✓ SAFE — Works only when server action is invoked directly by the form
+        (await cookies()).set("stripe_customer_id", json.stripe_customer_id, {
+            path: "/",
+        });
 
-        (await cookies()).set("stripe_customer_id", user.stripe_customer_id);
+        // IMPORTANT: This exits the action — nothing after runs
+        redirect("/checkout");
 
-
-        return { success: true };
     } catch (e: any) {
-        return { error: e.message };
+        return { error: e.message || "Unknown error occurred" };
     }
 }
