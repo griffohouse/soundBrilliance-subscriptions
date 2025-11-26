@@ -34,7 +34,8 @@ export async function createEnterpriseUser(formData: FormData) {
                     password,
                     terms_agreement: new Date().toISOString(),
                 }),
-            }
+                cache:"no-store"
+            },
         );
 
         const json = await response.json();
