@@ -1,0 +1,10 @@
+.logo_app_wrapper {
+  display: flex;
+  padding: 2rem;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 1.5rem;
+
+  box-shadow: 0 6px 13px 0 rgba(0, 0, 0, 0.1), 0 24px 24px 0 rgba(0, 0, 0, 0.09), 0 55px 33px 0 rgba(0, 0, 0, 0.05), 0 98px 39px 0 rgba(0, 0, 0, 0.1), 0 153px 43px 0 transparent;
+}

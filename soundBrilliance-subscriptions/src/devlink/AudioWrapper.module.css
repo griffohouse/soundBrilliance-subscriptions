@@ -1,0 +1,36 @@
+.background-color-blue {
+  background-color: var(--blue-9eb5e4c5);
+  background-image: none;
+  background-position: 0px 0px;
+  background-size: auto;
+}
+
+.audio-wrapper_layout {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  grid-column-gap: 2rem;
+}
+
+.audio-wrapper_image {
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+}
+
+.audio-wrapper_title {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  align-self: center;
+  flex: 1;
+  color: var(--cream-1766b841);
+}
+
+.heading-style-italic {
+  font-family: miller-display;
+  font-style: italic;
+}
+
+.text-color-white {
+  color: var(--cream-1766b841);
+}
