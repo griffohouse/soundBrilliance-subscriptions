@@ -1,64 +1,106 @@
 "use client";
 
-import { Section, Block, Link } from "@/devlink/_Builtin";
+import { SubmitButton } from '@/devlink/SubmitButton';
+import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
+import { createEnterpriseUser } from "./actions/createuser";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
-export default function Home() {
-  return (
-    <Section
-      tag="section"
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Block tag="div" className="container">
-        <Block
-          tag="div"
-          className="hero-split"
-          style={{
-            textAlign: "center",
-            maxWidth: "600px",
-            margin: "0 auto",
-          }}
+import {
+    Checkbox,
+    Field,
+    Fieldset,
+    Input,
+    Stack,
+    Text,
+    Container
+} from "@chakra-ui/react";
+
+const PasswordFields = dynamic(
+    () => import("@/components/passwordfields"),
+    { ssr: false }
+);
+
+export default function Page() {
+    console.log('signup route');
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setError(null);
+
+        const formData = new FormData(e.currentTarget);
+        const result = await createEnterpriseUser(formData);
+
+        if (result?.error) {
+            setError(result.error);
+            return;
+        }
+
+        router.push("/checkout");
+    }
+
+    useEffect(() => {
+        if (error) console.log("Error:", error);
+    }, [error]);
+
+    return (
+        <Container
+            height="100%"
+            width="100%"
+            fluid
+            pt="3rem"
+            pb="3rem"
+            centerContent
         >
-          <h1
-            className="margin-bottom-24px"
-            style={{
-              fontSize: "2.5rem",
-              fontWeight: 700,
-              background: "linear-gradient(83.21deg, #3245ff 0%, #bc52ee 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Welcome to Webflow Cloud
-          </h1>
-          <Block tag="p" className="margin-bottom-24px">
-            This is a simple test using Basic components with enhanced styling.
-          </Block>
-          <div style={{ marginTop: "12px" }}>
-            <Link
-              button={true}
-              options={{
-                href: "https://developers.webflow.com/webflow-cloud/getting-started",
-              }}
-              className="button-primary"
-              style={{
-                borderRadius: "4px",
-                background: "#146ef5",
-                color: "#ffffff",
-                boxShadow:
-                  "0px 0.5px 1px rgba(0, 0, 0, 0.25), inset 0px 29px 23px -16px rgba(255, 255, 255, 0.04), inset 0px 0.5px 0.5px rgba(255, 255, 255, 0.2)",
-              }}
-            >
-              Get Started
-            </Link>
-          </div>
-        </Block>
-      </Block>
-    </Section>
-  );
+            <SoundbrillianceLogo />
+
+            <form onSubmit={handleSubmit} autoComplete="new-password">
+                <Fieldset.Root mt="2rem" w="20rem" size="lg" maxW="2xl">
+                    <Stack textAlign="center">
+                        <Fieldset.Legend color="black">
+                            Create an Account
+                        </Fieldset.Legend>
+                    </Stack>
+
+                    <Fieldset.Content>
+                        <Field.Root>
+                            <Field.Label>Access Code</Field.Label>
+                            <Input bg="white" required name="accessCode" type="number" />
+                        </Field.Root>
+
+                        <Field.Root>
+                            <Field.Label>Name</Field.Label>
+                            <Input bg="white" required name="name" />
+                        </Field.Root>
+
+                        <Field.Root>
+                            <Field.Label>Email address</Field.Label>
+                            <Input bg="white" required name="email" type="email" />
+                        </Field.Root>
+
+                        <PasswordFields />
+
+                        <Checkbox.Root required name="termsAgreement">
+                            <Checkbox.HiddenInput />
+                            <Checkbox.Control bg="white" />
+                            <Checkbox.Label>
+                                I accept terms and conditions
+                            </Checkbox.Label>
+                        </Checkbox.Root>
+                    </Fieldset.Content>
+
+                    {error && (
+                        <Text color="#F4576A" mt="1rem">
+                            Error: {error}
+                        </Text>
+                    )}
+
+                    <SubmitButton />
+                </Fieldset.Root>
+            </form>
+        </Container>
+    );
 }
