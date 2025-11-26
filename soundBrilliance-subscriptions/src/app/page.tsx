@@ -1,9 +1,10 @@
 "use client";
 
-import { SubmitButton } from '@/devlink/SubmitButton';
+import { SubmitButton } from "@/devlink/SubmitButton";
 import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
-import { createEnterpriseUser} from "@/app/actions/createuser";
-import { useState, useEffect } from "react";
+import { createEnterpriseUser } from "@/app/actions/createuser";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import dynamic from "next/dynamic";
 import {
@@ -13,7 +14,7 @@ import {
     Input,
     Stack,
     Text,
-    Container
+    Container,
 } from "@chakra-ui/react";
 
 const PasswordFields = dynamic(
@@ -22,25 +23,33 @@ const PasswordFields = dynamic(
 );
 
 export default function Page() {
+    const router = useRouter();
+
     const [error, setError] = useState<string | null>(null);
 
-    // On server action error, Next passes it into "formState"
     async function handleAction(formData: FormData) {
+        setError(null);
+
         const result = await createEnterpriseUser(formData);
-        if (result?.error) setError(result.error);
+
+
+        if (result?.error) {
+            setError(result.error);
+            return;
+        }
+
+        // ✔ Client-based redirect
+        router.push("/checkout");
     }
 
     return (
         <Container height="100%" width="100%" fluid pt="3rem" pb="3rem" centerContent>
             <SoundbrillianceLogo />
 
-            {/* ✔ Form submits directly to server action */}
             <form action={handleAction} autoComplete="new-password">
                 <Fieldset.Root mt="2rem" w="20rem" size="lg" maxW="2xl">
                     <Stack textAlign="center">
-                        <Fieldset.Legend color="black">
-                            Create an Account
-                        </Fieldset.Legend>
+                        <Fieldset.Legend color="black">Create an Account</Fieldset.Legend>
                     </Stack>
 
                     <Fieldset.Content>
@@ -64,9 +73,7 @@ export default function Page() {
                         <Checkbox.Root required name="termsAgreement">
                             <Checkbox.HiddenInput />
                             <Checkbox.Control bg="white" />
-                            <Checkbox.Label>
-                                I accept terms and conditions
-                            </Checkbox.Label>
+                            <Checkbox.Label>I accept terms and conditions</Checkbox.Label>
                         </Checkbox.Root>
                     </Fieldset.Content>
 

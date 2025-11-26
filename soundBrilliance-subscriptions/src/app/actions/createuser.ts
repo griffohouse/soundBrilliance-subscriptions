@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 export async function createEnterpriseUser(formData: FormData) {
     const data = Object.fromEntries(formData.entries());
@@ -14,7 +13,6 @@ export async function createEnterpriseUser(formData: FormData) {
         termsAgreement,
     } = data as Record<string, string>;
 
-    // Client-side validations in server action
     if (password !== confirmPassword) {
         return { error: "Passwords do not match." };
     }
@@ -45,11 +43,13 @@ export async function createEnterpriseUser(formData: FormData) {
             return { error: json.message || "Failed to submit data to Xano." };
         }
 
+        // Server action cookie OK ✔
         (await cookies()).set("stripe_customer_id", json.stripe_customer_id, {
             path: "/",
         });
 
-        redirect("/checkout");
+        // IMPORTANT: Don't redirect here
+        return { success: true };
 
     } catch (e: any) {
         return { error: e.message || "Unknown error occurred" };
