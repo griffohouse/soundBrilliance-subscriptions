@@ -28,6 +28,7 @@ export default function Page() {
     const router = useRouter();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        console.log('trying to submit')
         e.preventDefault();
         setError(null);
 
@@ -35,6 +36,7 @@ export default function Page() {
         const result = await createEnterpriseUser(formData);
 
         if (result?.error) {
+            console.log('error:', result.error)
             setError(result.error);
             return;
         }
