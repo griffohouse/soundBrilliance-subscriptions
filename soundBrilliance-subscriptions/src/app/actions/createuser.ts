@@ -45,12 +45,10 @@ export async function createEnterpriseUser(formData: FormData) {
             return { error: json.message || "Failed to submit data to Xano." };
         }
 
-        // ✓ SAFE — Works only when server action is invoked directly by the form
         (await cookies()).set("stripe_customer_id", json.stripe_customer_id, {
             path: "/",
         });
 
-        // IMPORTANT: This exits the action — nothing after runs
         redirect("/checkout");
 
     } catch (e: any) {
