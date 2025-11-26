@@ -1,14 +1,14 @@
 import Checkout from '../../../components/checkout'
-import {Container, VStack, Text} from "@chakra-ui/react";
-import {SoundbrillianceLogo} from "@/devlink/SoundbrillianceLogo";
+import { Container, VStack, Text, Center } from "@chakra-ui/react";
+import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
 
 export default function Page() {
     return (
         <Container height={'100%'} width={'100%'} fluid={true} paddingTop={'3rem'} paddingBottom={'3rem'} centerContent={true}>
             <VStack textAlign={'center'} gap={'2.5rem'} width={'100%'}>
-                <div style={{width: '10rem', height: '10rem'}}>
+                <Center>
                     <SoundbrillianceLogo></SoundbrillianceLogo>
-                </div>
+                </Center>
                 <Text color="black">
                     Setup Subscription
                 </Text>

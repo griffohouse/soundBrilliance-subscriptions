@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import { stripe } from '../../lib/stripe'
+import { Center } from "@chakra-ui/react";
 import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
 import { SbApp } from "@/devlink/SbApp";
 import { AppleDownload } from "@/devlink/AppleDownload";
@@ -34,9 +35,9 @@ export default async function Welcome({ searchParams }) {
         return (
             <Container height={'100%'} width={'100%'} fluid={true} paddingTop={'3rem'} paddingBottom={'3rem'} centerContent={true}>
                 <VStack textAlign={'center'} gap={'2.5rem'} width={'100%'}>
-                    <div style={{width: '10rem', height: '10rem'}}>
+                    <Center>
                         <SoundbrillianceLogo></SoundbrillianceLogo>
-                    </div>
+                    </Center>
                     <Text maxWidth={'24rem'} textStyle={'lg'}>
                         <Span fontWeight={'bold'}>{customerName}</Span>
                         ,{''}your account with <Span fontWeight={'bold'}>{clientName}</Span> is created and your <Span fontWeight={'bold'}>subscription is
