@@ -1,6 +1,7 @@
 import Checkout from '../../../components/checkout'
 import { Container, VStack, Text, Center } from "@chakra-ui/react";
 import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
+export const dynamic = "force-dynamic"; // temporary debugging
 
 export default function Page() {
     return (

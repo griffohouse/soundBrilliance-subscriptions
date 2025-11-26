@@ -21,6 +21,7 @@ export default function Page() {
         setLoading(true);
 
         const result = await createEnterpriseUser(formData);
+        console.log('submitting the form')
 
         setLoading(false);
 
