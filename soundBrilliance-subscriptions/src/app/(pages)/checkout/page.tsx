@@ -7,9 +7,7 @@ import { SoundbrillianceLogo } from "@/devlink/SoundbrillianceLogo";
 // Keep the Next.js route config export named "dynamic"
 export const dynamic = "force-dynamic";
 
-const Checkout = dynamicImport(() => import("@/components/checkout"), {
-    ssr: false,
-});
+const Checkout = dynamicImport(() => import("@/components/checkout"));
 
 export default function Page() {
     return (
