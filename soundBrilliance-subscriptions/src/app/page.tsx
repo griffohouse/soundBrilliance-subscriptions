@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { createEnterpriseUser } from "./actions/createuser";
 import dynamic from "next/dynamic";
 import {
@@ -19,7 +20,6 @@ const PasswordFields = dynamic(
     { ssr: false }
 );
 
-// Submit button that uses form status
 function SubmitButton() {
     const { pending } = useFormStatus();
 
@@ -44,9 +44,16 @@ function SubmitButton() {
 }
 
 export default function Page() {
-    const [state, formAction] = useFormState(createEnterpriseUser, {
+    const [state, formAction] = useActionState(createEnterpriseUser, {
         error: null,
     });
+
+    // Handle redirect on the client
+    if (state?.success && state.redirectTo) {
+        if (typeof window !== "undefined") {
+            window.location.href = state.redirectTo;
+        }
+    }
 
     return (
         <Container

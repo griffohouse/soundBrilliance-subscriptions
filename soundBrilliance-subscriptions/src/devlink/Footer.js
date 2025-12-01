@@ -57,7 +57,7 @@ export function Footer({ as: _Component = _Builtin.Block }) {
                 button={false}
                 block=""
                 options={{
-                  href: "#",
+                  href: "/faq",
                 }}
               >
                 {"FAQ"}
@@ -66,7 +66,7 @@ export function Footer({ as: _Component = _Builtin.Block }) {
                 button={false}
                 block=""
                 options={{
-                  href: "#",
+                  href: "/privacy",
                 }}
               >
                 {"Privacy Policy"}
@@ -75,7 +75,7 @@ export function Footer({ as: _Component = _Builtin.Block }) {
                 button={false}
                 block=""
                 options={{
-                  href: "#",
+                  href: "/terms",
                 }}
               >
                 {"Terms of Use"}

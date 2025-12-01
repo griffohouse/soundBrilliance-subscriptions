@@ -41,7 +41,7 @@ export function ArtistCollab({ as: _Component = _Builtin.Block }) {
               button={false}
               block="inline"
               options={{
-                href: "#",
+                href: "/artists/farewell-milwaukee",
               }}
             >
               <_Builtin.Block
@@ -197,7 +197,7 @@ export function ArtistCollab({ as: _Component = _Builtin.Block }) {
               button={false}
               block="inline"
               options={{
-                href: "#",
+                href: "/artists/michael-rabb",
               }}
             >
               <_Builtin.Block
@@ -356,7 +356,7 @@ export function ArtistCollab({ as: _Component = _Builtin.Block }) {
               button={false}
               block="inline"
               options={{
-                href: "#",
+                href: "/artists/abilene",
               }}
             >
               <_Builtin.Block

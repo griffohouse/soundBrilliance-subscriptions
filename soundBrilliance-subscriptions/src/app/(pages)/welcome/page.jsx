@@ -46,7 +46,7 @@ export default async function Welcome({ searchParams }) {
                     <Text maxWidth={'24rem'} textStyle={'lg'}>
                         Use the links below to <Span fontWeight={'bold'}>access and login to the app</Span>
                     </Text>
-                    <div style={{width: '20rem', height: '20rem'}}>
+                    <div style={{width: '15rem', height: '15rem'}}>
                         <SbApp />
                     </div>
                     <HStack gap={'1.7rem'}>

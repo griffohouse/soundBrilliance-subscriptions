@@ -1,18 +1,19 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 interface ActionState {
     error: string | null;
+    success?: boolean;
+    redirectTo?: string;
 }
 
 export async function createEnterpriseUser(
     prevState: ActionState,
     formData: FormData
 ): Promise<ActionState> {
-
     const data = Object.fromEntries(formData.entries());
+
     const {
         accessCode,
         name,
@@ -22,7 +23,6 @@ export async function createEnterpriseUser(
         termsAgreement,
     } = data as Record<string, string>;
 
-    // Validate
     if (password !== confirmPassword) {
         return { error: "Passwords do not match." };
     }
@@ -32,7 +32,6 @@ export async function createEnterpriseUser(
     }
 
     try {
-        // Call Xano
         const response = await fetch(
             "https://xpzx-vpjp-v6yl.n7.xano.io/api:YM0i2R_3/enterprise_users",
             {
@@ -51,29 +50,27 @@ export async function createEnterpriseUser(
         const json = await response.json();
 
         if (!response.ok) {
-            let message =
-                json?.message ||
-                json?.error ||
-                json?.detail ||
-                (json?.validation
-                    ? json.validation.map((v: any) => v.message).join(", ")
-                    : null) ||
-                "Failed to submit data to Xano.";
-
-            return { error: message };
+            return {
+                error:
+                    json?.message ||
+                    json?.error ||
+                    "Failed to create user.",
+            };
         }
 
-        const cookieStore = cookies() as ReturnType<typeof cookies>;
-        // @ts-ignore TS does not recognize .set() yet
-        cookieStore.set("stripe_customer_id", json.stripe_customer_id, {
+        // Write cookie
+        // @ts-ignore
+        cookies().set("stripe_customer_id", json.stripe_customer_id, {
             path: "/",
             httpOnly: true,
         });
 
-
-        // Redirect server-side
-        redirect("/checkout");
-
+        // RETURN INSTEAD OF redirect()
+        return {
+            error: null,
+            success: true,
+            redirectTo: "/soundBrilliance-subscriptions/app/checkout",
+        };
     } catch (err: any) {
         return { error: err.message || "Unexpected server error" };
     }

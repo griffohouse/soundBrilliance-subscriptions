@@ -74,7 +74,7 @@ export function V2Footer({ as: _Component = _Builtin.Block }) {
                   button={false}
                   block=""
                   options={{
-                    href: "#",
+                    href: "/faq",
                   }}
                 >
                   {"FAQ"}
@@ -88,7 +88,7 @@ export function V2Footer({ as: _Component = _Builtin.Block }) {
                   button={false}
                   block=""
                   options={{
-                    href: "#",
+                    href: "/privacy",
                   }}
                 >
                   {"Privacy"}
@@ -102,7 +102,7 @@ export function V2Footer({ as: _Component = _Builtin.Block }) {
                   button={false}
                   block=""
                   options={{
-                    href: "#",
+                    href: "/terms",
                   }}
                 >
                   {"Terms"}
