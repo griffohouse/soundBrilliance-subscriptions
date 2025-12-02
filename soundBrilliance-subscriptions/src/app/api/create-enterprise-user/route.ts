@@ -66,7 +66,7 @@ export async function POST(req: Request) {
         return NextResponse.json({
             success: true,
             error: null,
-            redirectTo: "/soundBrilliance-subscriptions/app/checkout",
+            redirectTo: "/app/checkout",
         });
     } catch (err: any) {
         return NextResponse.json(

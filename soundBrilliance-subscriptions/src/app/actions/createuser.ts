@@ -15,7 +15,7 @@
 //     redirectTo?: string;
 // }
 //
-// export async function createEnterpriseUser(
+// export async function create-enterprise-user(
 //     prevState: ActionState,
 //     formData: FormData
 // ): Promise<ActionState> {
@@ -85,7 +85,7 @@
 //
 // }
 //
-// export async function createEnterpriseUser(
+// export async function create-enterprise-user(
 //     prevState: ActionState,
 //     formData: FormData
 // ): Promise<ActionState> {

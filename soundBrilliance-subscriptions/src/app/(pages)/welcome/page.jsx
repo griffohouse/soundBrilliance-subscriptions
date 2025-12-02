@@ -40,7 +40,7 @@ export default async function Welcome({ searchParams }) {
                     </Center>
                     <Text maxWidth={'24rem'} textStyle={'lg'}>
                         <Span fontWeight={'bold'}>{customerName}</Span>
-                        ,{''}your account with <Span fontWeight={'bold'}>{clientName}</Span> is created and your <Span fontWeight={'bold'}>subscription is
+                        ,{''} your account with <Span fontWeight={'bold'}>{clientName}</Span> is created and your <Span fontWeight={'bold'}>subscription is
                         active. </Span>
                     </Text>
                     <Text maxWidth={'24rem'} textStyle={'lg'}>

@@ -19,7 +19,7 @@ export async function fetchClientSecret() {
             { price: 'price_1SPSWb0ZsBlZ8v4sjfZ3VYSo', quantity: 1 }
         ],
         mode: 'subscription',
-        return_url: `${origin}/soundBrilliance-subscriptions/app/welcome?session_id={CHECKOUT_SESSION_ID}`,
+        return_url: `${origin}/app/welcome?session_id={CHECKOUT_SESSION_ID}`,
     })
 
     return session.client_secret

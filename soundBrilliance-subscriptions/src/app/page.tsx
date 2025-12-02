@@ -30,7 +30,7 @@ export default function Page() {
         const formData = new FormData(e.currentTarget);
         const body = Object.fromEntries(formData.entries());
 
-        const res = await fetch("/api/create-enterprise-user", {
+        const res = await fetch("/app/api/create-enterprise-user", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
