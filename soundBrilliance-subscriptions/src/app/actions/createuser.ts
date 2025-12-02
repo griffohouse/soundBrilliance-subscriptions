@@ -58,12 +58,12 @@ export async function createEnterpriseUser(
             };
         }
 
-        // Write cookie
-        // @ts-ignore
-        cookies().set("stripe_customer_id", json.stripe_customer_id, {
-            path: "/",
-            httpOnly: true,
-        });
+        // // Write cookie
+        // // @ts-ignore
+        // cookies().set("stripe_customer_id", json.stripe_customer_id, {
+        //     path: "/",
+        //     httpOnly: true,
+        // });
 
         // RETURN INSTEAD OF redirect()
         return {
