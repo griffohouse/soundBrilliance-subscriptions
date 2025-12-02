@@ -5,7 +5,7 @@ import { stripe } from "@/app/lib/stripe";
 export async function POST() {
     try {
         const origin = (await headers()).get("origin");
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         // @ts-ignore
         const stripeCustomerId = cookieStore.get("stripe_customer_id")?.value;
 
