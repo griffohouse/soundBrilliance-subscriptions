@@ -1,8 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import { createEnterpriseUser } from "./actions/createuser";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import {
     Checkbox,
@@ -20,40 +18,35 @@ const PasswordFields = dynamic(
     { ssr: false }
 );
 
-function SubmitButton() {
-    const { pending } = useFormStatus();
-
-    return (
-        <button
-            type="submit"
-            disabled={pending}
-            style={{
-                width: "100%",
-                padding: "0.75rem 1.5rem",
-                borderRadius: "2rem",
-                background: pending ? "#999" : "black",
-                color: "#FBF5E5",
-                cursor: pending ? "not-allowed" : "pointer",
-                border: "2px solid black",
-                marginTop: "1.5rem",
-            }}
-        >
-            {pending ? "Creating Account..." : "Create Account"}
-        </button>
-    );
-}
-
 export default function Page() {
-    const [state, formAction] = useActionState(createEnterpriseUser, {
-        error: null,
-    });
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
-    // Handle redirect on the client
-    if (state?.success && state.redirectTo) {
-        console.log(state.error);
-        console.log('redirecting')
-        if (typeof window !== "undefined") {
-            window.location.href = state.redirectTo;
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setError(null);
+        setLoading(true);
+
+        const formData = new FormData(e.currentTarget);
+        const body = Object.fromEntries(formData.entries());
+
+        const res = await fetch("/api/create-enterprise-user", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+        });
+
+        const json = await res.json();
+        setLoading(false);
+
+        if (!res.ok) {
+            setError(json.error || "Error creating user.");
+            return;
+        }
+
+        // redirect
+        if (json.success && json.redirectTo) {
+            window.location.href = json.redirectTo;
         }
     }
 
@@ -68,7 +61,7 @@ export default function Page() {
         >
             <SoundbrillianceLogo />
 
-            <form action={formAction} autoComplete="new-password">
+            <form onSubmit={handleSubmit} autoComplete="new-password">
                 <Fieldset.Root mt="2rem" w="20rem" size="lg" maxW="2xl">
                     <Stack textAlign="center">
                         <Fieldset.Legend color="black">
@@ -103,11 +96,26 @@ export default function Page() {
                         </Checkbox.Root>
                     </Fieldset.Content>
 
-                    <SubmitButton />
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        style={{
+                            width: "100%",
+                            padding: "0.75rem 1.5rem",
+                            borderRadius: "2rem",
+                            background: loading ? "#999" : "black",
+                            color: "#FBF5E5",
+                            cursor: loading ? "not-allowed" : "pointer",
+                            border: "2px solid black",
+                            marginTop: "1.5rem",
+                        }}
+                    >
+                        {loading ? "Creating Account..." : "Create Account"}
+                    </button>
 
-                    {state.error && (
+                    {error && (
                         <Text color="#F4576A" mt="1rem">
-                            Error: {state.error}
+                            Error: {error}
                         </Text>
                     )}
                 </Fieldset.Root>
