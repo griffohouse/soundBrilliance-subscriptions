@@ -50,6 +50,8 @@ export default function Page() {
 
     // Handle redirect on the client
     if (state?.success && state.redirectTo) {
+        console.log(state.error);
+        console.log('redirecting')
         if (typeof window !== "undefined") {
             window.location.href = state.redirectTo;
         }
