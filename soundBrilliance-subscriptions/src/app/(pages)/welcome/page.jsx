@@ -9,24 +9,30 @@ import { GoogleDownload } from "@/devlink/GoogleDownload";
 import { WebAccessDownload } from "@/devlink/WebAccessDownload";
 
 import {Link, Text, VStack, Container, Span, HStack} from "@chakra-ui/react";
-import {getEnterpriseUser} from "../../actions/getuser";
 
 export default async function Welcome({ searchParams }) {
-    const { session_id } = await searchParams
+    const { session_id } = await searchParams;
 
     if (!session_id)
-        throw new Error('Please provide a valid session_id (`cs_test_...`)')
+        throw new Error('Please provide a valid session_id (`cs_test_...`)');
 
     const {
         status,
-        customer_details: { email: customerEmail , name: customerName}
+        customer_details: { email: customerEmail , name: customerName }
     } = await stripe.checkout.sessions.retrieve(session_id, {
         expand: ['line_items', 'payment_intent']
-    })
-    const cookies = await (await import('next/headers')).cookies()
-    const stripeCustomerId = cookies.get("stripe_customer_id")?.value
-    const enterpriseUser = await getEnterpriseUser(stripeCustomerId)
+    });
+
+    const cookiesStore = await (await import('next/headers')).cookies();
+    const stripeCustomerId = cookiesStore.get("stripe_customer_id")?.value;
+
+    const enterpriseUser = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/app/api/get-enterprise-user?stripe_customer_id=${stripeCustomerId}`,
+        { cache: "no-store" }
+    ).then(res => res.json());
+
     const clientName = enterpriseUser.client_name;
+
     if (status === 'open') {
         return redirect('/')
     }
